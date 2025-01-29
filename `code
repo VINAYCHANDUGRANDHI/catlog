@@ -1,0 +1,50 @@
+import java.util.Map;
+import java.util.HashMap;
+
+public class LagrangeInterpolation {
+    
+    public static int baseToDecimal(String value, int base) {
+        return Integer.parseInt(value, base);
+    }
+
+    public static double lagrangeInterpolationAtZero(int[][] roots) {
+        int n = roots.length;
+        double c = 0.0;
+
+        for (int i = 0; i < n; i++) {
+            int x_i = roots[i][0];
+            int y_i = roots[i][1];
+            double term = y_i;
+
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    int x_j = roots[j][0];
+                    term *= (double) x_j / (x_j - x_i);
+                }
+            }
+            c += term;
+        }
+        return c;
+    }
+
+    public static void main(String[] args) {
+        Map<String, Map<String, String>> data = new HashMap<>();
+        data.put("1", Map.of("base", "10", "value", "4"));
+        data.put("2", Map.of("base", "2", "value", "111"));
+        data.put("3", Map.of("base", "10", "value", "12"));
+        data.put("6", Map.of("base", "4", "value", "213"));
+
+        int[][] roots = new int[data.size()][2];
+        int index = 0;
+
+        for (String key : data.keySet()) {
+            int x = Integer.parseInt(key);
+            int base = Integer.parseInt(data.get(key).get("base"));
+            int y = baseToDecimal(data.get(key).get("value"), base);
+            roots[index++] = new int[]{x, y};
+        }
+
+        double constantTerm = lagrangeInterpolationAtZero(roots);
+        System.out.println((int) Math.round(constantTerm));
+    }
+}
